@@ -1,0 +1,26 @@
+css_editor:
+  version: 1.x
+  css:
+    theme:
+      css/css_editor.css: {}
+  js:
+    js/css_editor.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
+
+codemirror:
+  remote: https://github.com/codemirror/CodeMirror
+  license:
+    name: MIT
+    url: https://github.com/codemirror/CodeMirror/blob/master/LICENSE
+    gpl-compatible: true
+  css:
+    theme:
+      /libraries/codemirror/lib/codemirror.css: {}
+      /libraries/codemirror/addon/hint/show-hint.css: {}
+  js:
+    /libraries/codemirror/lib/codemirror.js: {}
+    /libraries/codemirror/mode/css/css.js: {}
+    /libraries/codemirror/addon/hint/show-hint.js: {}
+
