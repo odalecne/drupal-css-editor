@@ -34,18 +34,15 @@ function css_editor_form_system_theme_settings_alter(&$form, FormStateInterface 
       '#type' => 'details',
       '#title' => t('Custom CSS'),
       '#open' => TRUE,
-      #'#weight' => -1,
     );
     // Switch to enable/disable customization.
     $form['css_editor']['css_enabled'] = array(
       '#title' => t('Enable or disable custom CSS:'),
       '#type' => 'checkbox',
-      //'#description' => t('Enable or disable custom CSS.'),
       '#default_value' => $config->get('enabled'),
     );
     // Editor box.
     $form['css_editor']['css'] = array(
-      //'#title' => t('Custom CSS'),
       '#type' => 'textarea',
       '#prefix' => '<div id="css-editor-field">',
       '#description' => t('Type or paste custom CSS code for this theme.'),
@@ -77,9 +74,12 @@ function _css_editor_theme_settings_form_submit($form, FormStateInterface $form_
   $theme = _css_editor_get_edited_theme($form_state);
   if ($theme) {
     // Save file.
-    $file = 'public://css/' . $theme . '.css';
-    file_unmanaged_save_data($form_state->getValue('css'), $file, FILE_EXISTS_REPLACE);
-    drupal_chmod($file);
+    $path = 'public://css_editor';
+    $file = $path . DIRECTORY_SEPARATOR . $theme . '.css';
+    if (file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+      file_unmanaged_save_data($form_state->getValue('css'), $file, FILE_EXISTS_REPLACE);
+      drupal_chmod($file);
+    }
     // Save settings.
     \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme)
       ->set('enabled', $form_state->getValue('css_enabled'))
