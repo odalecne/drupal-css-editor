@@ -3,12 +3,26 @@
 jQuery(function($) {
   'use strict';
 
+  var autoPreview = function() {
+    if ($('#css-editor-toggle-preview').is(':checked')) {
+      var value = ($('#css-editor-toggle-editor').is(':checked') ? $textarea.val() : editor.getValue());
+      var id = 'css-editor-preview-style';
+      var $css = $preview.contents().find('#' + id);
+      if ($css.length) {
+        $css.html(value);
+      }
+      else {
+        $preview.contents().find('head').append($('<style type="text/css" id="' + id + '">' + value + '</style>'));
+      }
+    }
+  };
+
   // Unobstrusive syntax highlighting
   var $textarea = $('#css-editor-textarea');
 
-  var createEditor= function() {
-    var editor = CodeMirror.fromTextArea($textarea[0], { lineNumbers : true, extraKeys : {"Ctrl-Space": "autocomplete"} });
-    editor.on('change', function(obj) { autoPreview(); });
+  var createEditor = function() {
+    var editor = CodeMirror.fromTextArea($textarea[0], { lineNumbers : true, extraKeys : { "Ctrl-Space" : "autocomplete" } });
+    editor.on('change', autoPreview);
     return editor;
   };
 
@@ -16,7 +30,7 @@ jQuery(function($) {
 
   $('div.CodeMirror').after('<input type="checkbox" id="css-editor-toggle-editor" /> <label for="css-editor-toggle-editor">' + Drupal.t('Use plain text editor') + '</label>');
 
-  $('#css-editor-toggle-editor').click(function() {
+  $('#css-editor-toggle-editor').on('click', function() {
     if ($(this).is(':checked')) {
       editor.toTextArea();
     }
@@ -32,7 +46,7 @@ jQuery(function($) {
   $preview.before('<div id="css-editor-preview-path-wrapper"><label for="css-editor-preview-path">' + Drupal.t('Preview path:') + '</label> <input type="text" id="css-editor-preview-path" size="60" /></div>');
   var $previewSettings = $('#css-editor-preview-path-wrapper');
 
-  $('#css-editor-toggle-preview').click(function() {
+  $('#css-editor-toggle-preview').on('click', function() {
     if ($(this).is(':checked')) {
       $preview.show();
       $previewSettings.show();
@@ -44,26 +58,12 @@ jQuery(function($) {
     }
   });
 
-  $textarea.keyup(function() { autoPreview(); });
+  $textarea.on('keyup', autoPreview);
 
-  $preview.load(function() { autoPreview(); });
+  $preview.on('load', autoPreview);
 
-  $('#css-editor-preview-path').blur(function() {
+  $('#css-editor-preview-path').on('blur', function() {
     $preview.attr('src', drupalSettings.CSSEditor.frontPage.replace('?', '/' + $(this).val() + '?'));
   });
-
-  var autoPreview = function() {
-    if ($('#css-editor-toggle-preview').is(':checked')) {
-      var value = ($('#css-editor-toggle-editor').is(':checked') ? $textarea.val() : editor.getValue());
-      var id = 'css-editor-preview-style';
-      var $css = $preview.contents().find('#' + id);
-      if ($css.length) {
-        $css.html(value);
-      }
-      else {
-        $preview.contents().find('head').append($('<style type="text/css" id="' + id + '">' + value + '</style>'));
-      }
-    }
-  };
 
 });
