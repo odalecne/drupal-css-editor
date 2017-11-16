@@ -13,12 +13,20 @@ use Drupal\Core\Url;
 function css_editor_library_info_alter(&$libraries, $extension) {
   $theme = \Drupal::theme()->getActiveTheme()->getName();
   if ($extension == $theme) {
-    $config = \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme);
-    $file = $config->get('path');
-    if ($config->get('enabled') && file_exists($file)) {
+    if ($file = _css_editor_get_stylesheet($theme)) {
       // Append custom style sheet to theme libraries.
-      $libraries['global-styling']['css']['theme'][$file]['weight'] = 9999;
+      $libraries['css_editor']['css']['theme'][$file]['weight'] = 9999;
     }
+  }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function css_editor_page_attachments(array &$page) {
+  $theme = \Drupal::theme()->getActiveTheme()->getName();
+  if (_css_editor_get_stylesheet($theme)) {
+    $page['#attached']['library'][] = $theme . '/css_editor';
   }
 }
 
@@ -98,4 +106,23 @@ function _css_editor_get_edited_theme(FormStateInterface $form_state) {
   // Return theme being currently edited.
   $build_info = $form_state->getBuildInfo();
   return isset($build_info['args'][0]) ? $build_info['args'][0] : FALSE;
+}
+
+/**
+ * Get the Custom CSS generated file for a theme.
+ *
+ * @param $theme
+ *   The machine name of the current theme.
+ *
+ * @return string|bool
+ */
+function _css_editor_get_stylesheet($theme) {
+  $config = \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme);
+  $file = $config->get('path');
+  if ($config->get('enabled') && file_exists($file)) {
+    return $file;
+  }
+  else {
+    return FALSE;
+  }
 }
