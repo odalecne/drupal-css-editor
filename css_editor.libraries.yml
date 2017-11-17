@@ -11,16 +11,16 @@ css_editor:
 
 codemirror:
   remote: https://github.com/codemirror/CodeMirror
+  version: 5.31.0
   license:
     name: MIT
     url: https://github.com/codemirror/CodeMirror/blob/master/LICENSE
     gpl-compatible: true
   css:
     theme:
-      /libraries/codemirror/lib/codemirror.css: {}
-      /libraries/codemirror/addon/hint/show-hint.css: {}
+      //cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.css: { type: external, minified: true }
+      //cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.min.css: { type: external, minified: true }
   js:
-    /libraries/codemirror/lib/codemirror.js: {}
-    /libraries/codemirror/mode/css/css.js: {}
-    /libraries/codemirror/addon/hint/show-hint.js: {}
-
+    //cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.min.js: { type: external, minified: true }
+    //cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/css/css.min.js: { type: external, minified: true }
+    //cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/show-hint.min.js: { type: external, minified: true }
