@@ -52,7 +52,12 @@ function css_editor_admin_settings() {
  * Implements hook_form_FORM_ID_alter() for `system_theme_settings`.
  */
 function css_editor_form_system_theme_settings_alter(&$form, &$form_state, $form_id) {
-  $theme = arg(3);
+  if (!(isset($form_state['build_info']) &&
+      isset($form_state['build_info']['args']) &&
+      isset($form_state['build_info']['args'][0]))) {
+    return;
+  }
+  $theme = $form_state['build_info']['args'][0];
   $enabled_themes = variable_get('css_editor_enabled_themes', array());
   if (isset($enabled_themes[$theme]) && $enabled_themes[$theme]) {
     $form['css'] = array(
