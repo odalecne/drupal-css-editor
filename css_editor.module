@@ -58,6 +58,24 @@ function css_editor_form_system_theme_settings_alter(&$form, FormStateInterface 
       '#attributes' => array('id' => 'css-editor-textarea'),
       '#suffix' => '</div>',
     );
+    // Switch to enable/disable the plain text editor.
+    $form['css_editor']['plaintext_enabled'] = array(
+      '#title' => t('Use plain text editor'),
+      '#type' => 'checkbox',
+      '#default_value' => $config->get('plaintext_enabled'),
+    );
+    // Switch to enable/disable autopreview.
+    $form['css_editor']['autopreview_enabled'] = array(
+      '#title' => t('Enable auto preview'),
+      '#type' => 'checkbox',
+      '#default_value' => $config->get('autopreview_enabled'),
+    );
+    // Preview path.
+    $form['css_editor']['preview_path'] = array(
+      '#title' => t('Preview path:'),
+      '#type' => 'textfield',
+      '#size' => 60,
+    );
     // Preview box.
     $preview_url = Url::fromRoute('<front>', array(), array('absolute' => TRUE, 'query' => array('theme' => $theme)))->toString();
     $form['css_editor']['css_preview'] = array(
@@ -91,6 +109,8 @@ function _css_editor_theme_settings_form_submit($form, FormStateInterface $form_
     // Save settings.
     \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme)
       ->set('enabled', $form_state->getValue('css_enabled'))
+      ->set('plaintext_enabled', $form_state->getValue('plaintext_enabled'))
+      ->set('autopreview_enabled', $form_state->getValue('autopreview_enabled'))
       ->set('css', $form_state->getValue('css'))
       ->set('path', $file)
       ->save();

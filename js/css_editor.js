@@ -3,9 +3,13 @@
 jQuery(function($) {
   'use strict';
 
+  // Set variable for toggles.
+  var $preview_toggle = $('#edit-autopreview-enabled');
+  var $editor_toggle = $('#edit-plaintext-enabled');
+
   var autoPreview = function() {
-    if ($('#css-editor-toggle-preview').is(':checked')) {
-      var value = ($('#css-editor-toggle-editor').is(':checked') ? $textarea.val() : editor.getValue());
+    if ($preview_toggle.is(':checked')) {
+      var value = ($editor_toggle.is(':checked') ? $textarea.val() : editor.getValue());
       var id = 'css-editor-preview-style';
       var $css = $preview.contents().find('#' + id);
       if ($css.length) {
@@ -17,7 +21,7 @@ jQuery(function($) {
     }
   };
 
-  // Unobstrusive syntax highlighting
+  // Unobstrusive syntax highlighting.
   var $textarea = $('#css-editor-textarea');
 
   var createEditor = function() {
@@ -28,9 +32,12 @@ jQuery(function($) {
 
   var editor = createEditor();
 
-  $('div.CodeMirror').after('<input type="checkbox" id="css-editor-toggle-editor" /> <label for="css-editor-toggle-editor">' + Drupal.t('Use plain text editor') + '</label>');
+  // Initial state of the editor checkbox.
+  if ($editor_toggle.is(':checked')) {
+    editor.toTextArea();
+  }
 
-  $('#css-editor-toggle-editor').on('click', function() {
+  $editor_toggle.on('click', function() {
     if ($(this).is(':checked')) {
       editor.toTextArea();
     }
@@ -39,14 +46,18 @@ jQuery(function($) {
     }
   });
 
-  // Preview
-  $('div.CodeMirror').after('<input type="checkbox" id="css-editor-toggle-preview" checked="checked" /> <label for="css-editor-toggle-preview">' + Drupal.t('Enable auto preview') + '</label>');
+  // Preview.
   var $preview = $('#css-editor-preview');
 
-  $preview.before('<div id="css-editor-preview-path-wrapper"><label for="css-editor-preview-path">' + Drupal.t('Preview path:') + '</label> <input type="text" id="css-editor-preview-path" size="60" /></div>');
-  var $previewSettings = $('#css-editor-preview-path-wrapper');
+  var $previewSettings = $('.js-form-item-preview-path');
 
-  $('#css-editor-toggle-preview').on('click', function() {
+  // Initial state of the preview toggle checkbox.
+  if (!$preview_toggle.is(':checked')) {
+    $preview.hide();
+    $previewSettings.hide();
+  }
+
+  $preview_toggle.on('click', function() {
     if ($(this).is(':checked')) {
       $preview.show();
       $previewSettings.show();
@@ -62,7 +73,7 @@ jQuery(function($) {
 
   $preview.on('load', autoPreview);
 
-  $('#css-editor-preview-path').on('blur', function() {
+  $('#edit-preview-path').on('blur', function() {
     $preview.attr('src', drupalSettings.CSSEditor.frontPage.replace('?', '/' + $(this).val() + '?'));
   });
 
