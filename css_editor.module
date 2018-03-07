@@ -36,7 +36,7 @@ function css_editor_page_attachments(array &$page) {
 function css_editor_form_system_theme_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
   $theme = _css_editor_get_edited_theme($form_state);
   if ($theme) {
-    $config = \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme);
+    $config = \Drupal::config('css_editor.theme.' . $theme);
     // Add CSS customization fieldset.
     $form['css_editor'] = array(
       '#type' => 'details',
@@ -137,7 +137,7 @@ function _css_editor_get_edited_theme(FormStateInterface $form_state) {
  * @return string|bool
  */
 function _css_editor_get_stylesheet($theme) {
-  $config = \Drupal::configFactory()->getEditable('css_editor.theme.' . $theme);
+  $config = \Drupal::config('css_editor.theme.' . $theme);
   $file = $config->get('path');
   if ($config->get('enabled') && file_exists($file)) {
     return $file;
